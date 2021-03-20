@@ -1,0 +1,213 @@
+Vuex
+
+state: Single object that contains all the shared data.
+Important: Assign default values for all the properties created into the state object (this is important for Vue's change detection)
+
+Mutations: To change any state of your data you need to use mutations (they are synchronous)
+
+Actions: Contains asynchronous calls (ex:to call an rest API) using promises or async/await that when finish commit mutations to the store
+
+Getters: Are functions that fetch data from the state and do some sort of calculation to be use in the app. This avoid to have an expensive procedure repeated across the app.
+
+------------------------------------
+****CREATING A VUE STORE
+
+$ npm install vuex@x.x.x --save
+create a folder store, and inside create a file index.js
+INDEX.JS
+import Vue from 'vue'
+import Vuex from 'vuex'
+Vue.use(Vuex);
+export default new Vuex.Store({
+	state : {
+		anyprop: [],   //It's very important for the store to start with default values for all the properties that you are gonna use in the project (due to Vue's change detection)
+	}
+})
+
+add the dependency of the store in the main file with all the dependencies for the project
+
+-------------------------------
+**Changing state with mutations
+...
+export default new Vuex.Store({
+	state : {
+		personas: [],   
+	},
+	mutations: {
+		addPersona(state, persona) {
+			state.personas.push(persona);
+		},
+	},
+})
+
+Inside of any Component.vue
+Ex:
+
+export default {
+  name: "Component",
+  props:{
+    bindingProp: Object
+  }, 
+  methods: {
+	addToAnyObject(){
+		const anyValueExample = this.anyValueFromThisComponent;
+		this.$store.commit('addPersona', anyValueExample);
+	},
+  },
+}  
+   
+-----------------------------------------
+**Retrieve data from state in a Component
+
+export default {
+  name: "Component",  
+  computed: {
+	personas(){		
+		this.$store.state.personas;
+	},
+  },
+}  
+
+------------------------------------------------------
+**Using Getters to return calculated data from the state
+
+export default new Vuex.Store({
+	state : {
+		personas: [],   
+	},
+	mutations: {
+		addPersona(state, persona) {
+			state.personas.push(persona);
+		},
+	},
+	getters: {
+		getPersonaFiltradas(state){
+			state.personas.filter(p => /* some logic here */);
+		},
+	},
+})
+
+Inside of any Component.vue
+Ex:
+
+export default {
+  name: "Component",  
+  computed: {
+	personas(){		
+		this.$store.state.personas;
+	},
+	personasFiltradas() {
+		this.$store.getters.getPersonaFiltradas;
+	},
+  },
+}  
+ 
+-----------------------------------------
+**Using actions to work asynchronous data 
+
+export default new Vuex.Store({
+	state : {
+		personas: [],   
+	},
+	mutations: {
+		addPersona(state, persona) {
+			state.personas.push(persona);
+		},
+		updatePersonas(state, personas){
+			state.personas = personas;
+		}
+	},
+	actions: {
+		getPersonasFromService(context){ //context contains different objects of the store and you can deconstruct for instance: method({state, getters, commit, dispatch})
+			//But we cannot change the state directly we need to use a mutations to do that
+		},
+		getPersonas({commit}){
+			axios.get('/api/personas')
+				.then(result => commit('updatePersonas', result.data))
+				.catch(console.error);
+		},		
+	},
+	getters: {
+		getPersonaFiltradas(state){
+			state.personas.filter(p => /* some logic here */);
+		},
+	},
+})
+
+if we want to load the data when the component loads at firt time
+
+export default {
+  name: "Component",  
+  created: {
+	this.$store.dispatch('getPersonas');
+  },
+  ...
+}  
+
+---------------------------------------- 
+** How create a shared functionality with mixin
+
+Create a .js with the functionality you want to share, in this example PersonaMixin.js
+
+export default {
+	
+	created: {
+		this.$store.dispatch('getPersonas');
+	},
+	computed: {
+		personas(){
+			return this.$store.state.personas || [];
+		}
+	},
+}
+
+Inside our component.vue
+
+<script>
+import personas from './PersonaMixin';
+
+export default{
+	name: 'Component',
+	mixins:[personas],
+};
+
+</script>
+ 
+------------------------------------------------ 
+** Create accions to save data into the api
+
+    ...
+    actions: {
+		getPersonasFromService(context){ //context contains different objects of the store and you can deconstruct for instance: method({state, getters, commit, dispatch})
+			//But we cannot change the state directly we need to use a mutations to do that
+		},
+		getPersonas({commit}){
+			axios.get('/api/personas')
+				.then(result => commit('updatePersonas', result.data))
+				.catch(console.error);
+		},
+		addPersona({commit, store}, persona){
+			axios.post('/api/persona', persona)
+				.then( () => commit('personaInserted', persona); //change a state into the client app
+		}
+	},
+
+So now the peace of code that we had at the beginig should be like this
+
+export default {
+  name: "Component",
+  props:{
+    bindingProp: Object
+  }, 
+  methods: {
+	addToAnyObject(){
+		const anyValueExample = this.anyValueFromThisComponent;
+		//we changed commit by dispatch because basically the difference between mutations and accions is that you commit mutations and dispatch acctions
+		this.$store.dispatch('addPersona', anyValueExample);   
+	},
+  },
+}  
+
+ 
+-----------------------------------
+**Using modules to organize a store

@@ -1,0 +1,26 @@
+DOCKER COMMAND
+
+docker images
+
+docker rm <container id>
+docker rmi <images>
+
+docker container ls
+docker container ps -a
+
+docker logs <container name>
+
+--Elasticsearch
+docker network create elastic
+docker pull elasticsearch:7.9.0
+docker run -d --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.0
+
+--Kibana
+docker run --name kibana --link elasticsearch:elasticsearch --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:7.9.0
+
+--Curl
+docker run --rm curlimages/curl:latest --version
+
+--Prometheus
+docker run -p 9090:9090 prom/prometheus
+

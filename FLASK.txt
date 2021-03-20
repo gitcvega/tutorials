@@ -1,0 +1,11 @@
+VSCode (Visual Studio Code)
+
+> sudo apt-get install pip3
+> pip3 install pipenv
+> pipenv shell
+> pipenv install flask
+> pipenv install Flask-SQLAlchemy
+> sudo apt-get install sqlite3
+
+> sqlite3 database/fb.db
+sqlite> .databases 
