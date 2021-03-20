@@ -1,0 +1,133 @@
+Hadoop
+Solr
+CreateDB
+
+--DOCKER
+docker network create elastic
+docker pull elasticsearch:7.9.0
+docker run -d --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.9.0
+
+
+$ docker pull kibana:7.9.0
+$ docker run --link elasticsearch:elasticsearch --net elastic  -p 5601:5601 kibana:7.9.0
+
+--TUTORIAL
+
+Steps within the text search process
+	Know of the documents's existence (Web crawler)
+		- Specify documents to index
+	Index the document for lookup (Inverted index)
+		- ElasticSearch creates the inverted index behind the scenes
+	Know how relevant the document is (Scoring)
+		- ElasticSearch applies a scoring algorithm from each document for each term
+	Retrive raked by relevance (Search)
+		- Retrives documents using a Query DSL.
+
+ElasticSearch
+- Distributed: Scales to thousands of nodes	
+- High Availability: Multple copies of data
+	Multiple copies of your data and also indices are backuped too.
+- RESTful API: CRUD, monitoring and other operation via simple JSON-based HTTP calls.
+	Create, Retrive, Update and Delete documents in json format.
+- Powerful Query DSL: Express complex queries simply. Using json as well.
+- Schemaless: Index data without an explicit schema.
+
+Uses Cases
+- Mining log data for insights.
+- Property (ie. price) alerting platform.
+- Business Analytics and intelligence.
+
+Basic Concepts
+- Node
+	Every single server is a Node	
+	Every Node performs indexing
+    All node makes serching in parallel
+	A Node as a unique id name, random is given at the begining
+-Cluster
+	It is a collection of nodes (thousands of nodes could be a single Cluster)
+	Holds the entire indexed data
+	Has a unique name, by default is elasticsearch
+	ElasticSearch can scale through Nodes joining to a cluser using the cluster name and 
+	always inside the same network
+	
+-Index (Inverted Index data structure)
+	It refers a collection of similar documents
+	Documents might not be exactly the same
+    Index within a cluster is identified by name
+    Might be any number of indices within a cluster	
+	Different indices for different logical groupings
+	Within a Index could be multiple documents types
+	
+-Document
+	Basic unit of information to be indexed
+	It is a container of text that need to be searcheable
+	Expressed in JSON
+	Every documents resides within an index
+	Assigned to a type within an index
+	
+Why do not have just one instance of elasticsearch?
+	Might be too large to fit in the hard disk of one node
+	Too slow to serve all search requests from one node (parallelism is required)
+Solution: Split the index across multiple nodes in the cluster (sharding data)	
+	
+-Features about high availability	
+	Sharding index
+	Index replicas
+	---High availability in case a node fails
+	Scale search volume/throughput by searching multiple replicas
+	An index can be split into multible shards
+	A shard can be replicated 0 or more times
+	Every shard has 1 backup copy
+	An index in elasticsearch has 5 shards and 1 replica by default
+		
+RESTful API COMMANDS
+
+-Check Cluster
+http://localhost:9200/
+-Check Health
+http://localhost:9200/_cat/health?v&pretty
+-Check Nodes
+http://localhost:9200/_cat/nodes?v&pretty
+
+-Read Indices
+curl -XGET 'localhost:9200/_cat/indices?v&pretty'
+-Create an Index
+curl -XPUT 'localhost:9200/products?&pretty'
+
+- Executing Search Request Using ElasticSearch Query DSL
+	The are 2 context to make searching in elasticsearch: Query Context/Filter Context
+	
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+-- Total input/ouput
+-- Total MessageType (Knowing exactly the messageType to search)
+--  
+	
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+- Pros
+Open-source
+Speed/Performance
+Full-text search (Powerful ad hoc querying)
+Scalability/High Availability
+Distributed storage and processing(in parallel)
+Automated failover handling
+
+- Cons
+On a large scale, you need to organize data and infrastructure effectively.
+Needs to be fine-tuned to get the most out of it and might be tricky.
+No geographic distribution	
+Auto sharding not available
+Only suport JSON format
+
+ElasticSearch supports 4 types of aggregations (METRIC, BUCKETING, MATRIX, PIPELINE)
+
+-METRIC (Sum, Count, Average, Min, Max, Cadinality(Distinct))
+There is a special metric that gather the rest of the metric in just one called "stats".
+Cardinality= The number of unique values present in a field across documents.
+
+-BUCKETING(Logically group documents into buckets)
+Documents counts are approximate, calculating aggregation across index shards can result in imperfections.	
+
+
+	
