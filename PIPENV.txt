@@ -1,0 +1,25 @@
+PIP
+
+$ sudo apt install python3-pip
+$ pip3 --version
+
+PIPENV
+
+$ pip3 install --user pipenv
+
+- Teniendo un archivo PipFile en el proyecto
+$ python3 -m pipenv shell
+- Entonces crea el virtual environment en la carpeta de usuario (ya activada)
+ . /home/cvega/.local/share/virtualenvs/FB-Service-BVdhXaGa/bin/activate
+
+-Como encontrar el virtual environment
+$ python3 -m pipenv --venv
+
+-Como encontrar la ruta del proyecto
+$ python3 -m pipenv --where
+
+- Install all default and develpment dependencies from pipfile
+$ sudo python3 -m pipenv install --dev
+
+- Para salir del environment
+$ deactivate

@@ -1,0 +1,12 @@
+SQLAlchemy
+
+(FB-Service) root@pc-ubuntu:~/Documentos/proyects/github/fb-negocios-inmobiliarios/FB-Service# python3
+
+>>> from api import db
+/home/cvega/.local/share/virtualenvs/FB-Service-BVdhXaGa/lib/python3.7/site-packages/flask_sqlalchemy/__init__.py:834: FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
+  'SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and '
+>>> db.create_all()
+>>> from api.repository.sqlalchemy import Persona
+>>> persona1 = Persona(1, 'cesar', 'vega')
+>>> db.session.add(persona1)
+>>> db.session.commit()
