@@ -23,3 +23,6 @@ $ sudo python3 -m pipenv install --dev
 
 - Para salir del environment
 $ deactivate
+
+-Instalar una nueva lib (coloca la dependencia en el archivo pipfile)
+$pipenv install flask-cors

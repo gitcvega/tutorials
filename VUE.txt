@@ -1,0 +1,17 @@
+VUE
+
+--------------------------------------------------------
+VUE CLI
+
+--CREATE AN APPLICATION
+
+$ npm install -g @vue/cli@4.3.1
+$ vue create project_name
+
+-------------------------------------------------
+
+-- Build VUE APP for production (/dist)
+
+$ npm run build
+
+
